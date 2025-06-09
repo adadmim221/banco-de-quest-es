@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quiz ENEM Interativo - Arte e Informática</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; background: #fafafa; }
+  h1 { color: #333; }
+  button { margin: 10px 10px 20px 0; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+  .questao { margin-bottom: 20px; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 0 5px #ccc; }
+  .alternativas label { display: block; margin: 5px 0; cursor: pointer; }
+  .resultado { margin-top: 20px; padding: 15px; border-radius: 8px; }
+  .acertou { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+  .errou { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+  .explicacao { font-style: italic; margin-top: 5px; }
+</style>
+</head>
+<body>
+
+<h1>Quiz ENEM Interativo - Arte e Informática</h1>
+
+<div>
+  <button onclick="iniciarQuiz('arte')">Mostrar 10 questões de Arte</button>
+  <button onclick="iniciarQuiz('informatica')">Mostrar 10 questões de Informática</button>
+</div>
+
+<div id="quiz-container"></div>
+
+<script>
+// Base de dados com questões, alternativas, gabarito e explicação
+
+const questoesArte = [
+  {
+    pergunta: "Quem pintou a Mona Lisa?",
+    alternativas: ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Michelangelo", "Claude Monet"],
+    gabarito: 2,
+    explicacao: "Leonardo da Vinci pintou a Mona Lisa, uma das obras mais famosas do Renascimento."
+  },
+  {
+    pergunta: "O que caracteriza o movimento artístico Cubismo?",
+    alternativas: ["Uso de cores vivas", "Representação tridimensional", "Fragmentação e geometrização das formas", "Realismo detalhado", "Temas religiosos"],
+    gabarito: 2,
+    explicacao: "O Cubismo fragmenta e usa formas geométricas para representar diferentes pontos de vista."
+  },
+  {
+    pergunta: "Qual a principal característica do Barroco?",
+    alternativas: ["Simplicidade", "Exuberância e dramaticidade", "Geometria e linhas retas", "Minimalismo", "Abstração"],
+    gabarito: 1,
+    explicacao: "O Barroco é conhecido por sua exuberância, movimento e dramaticidade."
+  },
+  {
+    pergunta: "O que é Arte Moderna?",
+    alternativas: ["Arte da Idade Média", "Arte clássica", "Movimento artístico do século XX que rompe com tradições", "Pintura rupestre", "Arte digital"],
+    gabarito: 2,
+    explicacao: "A Arte Moderna rompeu com os estilos tradicionais, valorizando inovação."
+  },
+  {
+    pergunta: "Quem é o autor da obra 'Guernica'?",
+    alternativas: ["Salvador Dalí", "Pablo Picasso", "Diego Rivera", "Frida Kahlo", "Claude Monet"],
+    gabarito: 1,
+    explicacao: "'Guernica' é uma pintura de Picasso que denuncia os horrores da guerra."
+  },
+  {
+    pergunta: "Qual movimento artístico é conhecido pela valorização da luz e cor?",
+    alternativas: ["Impressionismo", "Realismo", "Cubismo", "Surrealismo", "Expressionismo"],
+    gabarito: 0,
+    explicacao: "O Impressionismo enfatiza a luz natural e as cores vibrantes."
+  },
+  {
+    pergunta: "Qual artista é conhecido por esculturas com formas geométricas?",
+    alternativas: ["Auguste Rodin", "Constantin Brâncuși", "Michelangelo", "Henry Moore", "Jeff Koons"],
+    gabarito: 1,
+    explicacao: "Brâncuși foi pioneiro na escultura moderna com formas geométricas simplificadas."
+  },
+  {
+    pergunta: "O que é uma obra de arte efêmera?",
+    alternativas: ["Que dura para sempre", "Que é temporária e passageira", "Que é digital", "Que é clássica", "Que é abstrata"],
+    gabarito: 1,
+    explicacao: "Arte efêmera é feita para durar pouco tempo, muitas vezes com materiais frágeis."
+  },
+  {
+    pergunta: "Qual país é berço do Renascimento?",
+    alternativas: ["França", "Itália", "Espanha", "Alemanha", "Inglaterra"],
+    gabarito: 1,
+    explicacao: "O Renascimento surgiu na Itália, especialmente em cidades como Florença."
+  },
+  {
+    pergunta: "O que caracteriza o movimento Surrealista?",
+    alternativas: ["Realismo puro", "Expressão do inconsciente e sonhos", "Abstração geométrica", "Arte sacra", "Natureza morta"],
+    gabarito: 1,
+    explicacao: "O Surrealismo explora o mundo dos sonhos e do inconsciente."
+  }
+  ,{
+    tema: "Arte",
+    enunciado: "O que marcou a transição da arte medieval para a renascentista?",
+    alternativas: [
+      "Uso da arte abstrata",
+      "Ênfase em temas religiosos",
+      "Valorização da perspectiva e do corpo humano",
+      "Ausência de profundidade",
+      "Técnica de mosaico"
+    ],
+    gabarito: 2,
+    explicacao: "O Renascimento introduziu a perspectiva e o estudo anatômico do corpo humano."
+  },
+  {
+    tema: "Arte",
+    enunciado: "Qual movimento artístico foi influenciado pelas teorias de Sigmund Freud?",
+    alternativas: [
+      "Barroco",
+      "Impressionismo",
+      "Surrealismo",
+      "Neoclassicismo",
+      "Rococó"
+    ],
+    gabarito: 2,
+    explicacao: "O Surrealismo se baseia no inconsciente e nos sonhos, influenciado por Freud."
+  },
+  {
+    tema: "Arte",
+    enunciado: "Qual artista é conhecido pelas latas de sopa Campbell’s?",
+    alternativas: [
+      "Roy Lichtenstein",
+      "Salvador Dalí",
+      "Andy Warhol",
+      "Jackson Pollock",
+      "Jean-Michel Basquiat"
+    ],
+    gabarito: 2,
+    explicacao: "Andy Warhol é um dos principais nomes da Pop Art, famoso pelas latas de sopa."
+  },
+  {
+    tema: "Arte",
+    enunciado: "O que é instalação artística?",
+    alternativas: [
+      "Pintura em tela",
+      "Técnica de escultura em bronze",
+      "Obra que ocupa e dialoga com o espaço expositivo",
+      "Arte de rua com spray",
+      "Arte feita com mosaicos"
+    ],
+    gabarito: 2,
+    explicacao: "A instalação envolve o ambiente e estimula a interação do público com a obra."
+  },
+  {
+    tema: "Arte",
+    enunciado: "Qual movimento se caracteriza por cenas do cotidiano com traços delicados e tons pastéis?",
+    alternativas: [
+      "Rococó",
+      "Realismo",
+      "Arte Romana",
+      "Surrealismo",
+      "Expressionismo"
+    ],
+    gabarito: 0,
+    explicacao: "O Rococó é marcado por suavidade, temas galantes e decoração refinada."
+  },
+  {
+    tema: "Arte",
+    enunciado: "A Semana de Arte Moderna de 1922 ocorreu em que cidade?",
+    alternativas: [
+      "Rio de Janeiro",
+      "Salvador",
+      "São Paulo",
+      "Belo Horizonte",
+      "Recife"
+    ],
+    gabarito: 2,
+    explicacao: "A Semana de Arte Moderna aconteceu em São Paulo e foi um marco do Modernismo no Brasil."
+  },
+  {
+    tema: "Arte",
+    enunciado: "O que é arte conceitual?",
+    alternativas: [
+      "Pintura a óleo realista",
+      "Obra feita com argila",
+      "Arte que valoriza mais a ideia do que o objeto final",
+      "Técnica de vitral",
+      "Música barroca"
+    ],
+    gabarito: 2,
+    explicacao: "Na arte conceitual, o conceito é mais importante que o produto visual."
+  },
+  {
+    tema: "Arte",
+    enunciado: "Qual o principal tema das pinturas rupestres?",
+    alternativas: [
+      "Retratos humanos",
+      "Mitologia",
+      "Paisagens",
+      "Atividades de caça e cotidiano",
+      "Escultura religiosa"
+    ],
+    gabarito: 3,
+    explicacao: "As pinturas rupestres retratavam caçadas, rituais e cenas do cotidiano."
+  },
+  {
+    tema: "Arte",
+    enunciado: "Qual artista brasileiro ficou conhecido por esculturas de corpos fragmentados?",
+    alternativas: [
+      "Tarsila do Amaral",
+      "Hélio Oiticica",
+      "Vik Muniz",
+      "Aleijadinho",
+      "Amilcar de Castro"
+    ],
+    gabarito: 3,
+    explicacao: "Aleijadinho foi escultor do barroco mineiro, conhecido por obras como os Profetas."
+  },
+  {
+    tema: "Arte",
+    enunciado: "O que caracteriza o movimento Expressionista?",
+    alternativas: [
+      "Uso de figuras mitológicas",
+      "Imitação da natureza",
+      "Representação emocional e subjetiva",
+      "Arte geométrica",
+      "Uso de perspectivas matemáticas"
+    ],
+    gabarito: 2,
+    explicacao: "O Expressionismo distorce a realidade para expressar emoções intensas."
+  },
+];
+
+const questoesInformatica = [
+  {
+    pergunta: "O que é um sistema operacional?",
+    alternativas: ["Um tipo de hardware", "Um software que gerencia recursos do computador", "Um aplicativo de edição de texto", "Um protocolo de rede", "Um dispositivo de entrada"],
+    gabarito: 1,
+    explicacao: "O sistema operacional gerencia recursos, arquivos e periféricos do computador."
+  },
+  {
+    pergunta: "Qual é a função principal de um compilador?",
+    alternativas: ["Executar programas diretamente", "Traduzir código fonte para linguagem de máquina", "Editar imagens", "Gerenciar banco de dados", "Navegar na internet"],
+    gabarito: 1,
+    explicacao: "Compiladores traduzem código-fonte em linguagem de máquina executável."
+  },
+  {
+    pergunta: "O que significa HTML?",
+    alternativas: ["HyperText Markup Language", "HighText Machine Language", "Hyperlink and Text Markup Language", "Home Tool Markup Language", "Hyperlinking Text Marking Language"],
+    gabarito: 0,
+    explicacao: "HTML é a linguagem padrão para criar páginas web."
+  },
+  {
+    pergunta: "Qual a função do CSS?",
+    alternativas: ["Estruturar conteúdo da web", "Definir estilo e layout das páginas web", "Criar scripts para páginas", "Gerenciar banco de dados", "Proteger contra vírus"],
+    gabarito: 1,
+    explicacao: "CSS é usado para estilizar páginas web, controlando cores, fontes e layout."
+  },
+  {
+    pergunta: "O que é um IP?",
+    alternativas: ["Protocolo de segurança", "Endereço de identificação de um dispositivo na rede", "Tipo de vírus", "Software de edição", "Comando de sistema operacional"],
+    gabarito: 1,
+    explicacao: "IP é o endereço único de um dispositivo conectado à rede."
+  },
+  {
+    pergunta: "O que faz um firewall?",
+    alternativas: ["Acelera a internet", "Filtra e protege redes contra acessos não autorizados", "Faz backup de arquivos", "Gerencia dispositivos USB", "Controla a tela do computador"],
+    gabarito: 1,
+    explicacao: "Firewall protege a rede bloqueando conexões suspeitas."
+  },
+  {
+    pergunta: "Qual é a linguagem usada para programar a maioria das páginas web?",
+    alternativas: ["Python", "JavaScript", "C++", "SQL", "Ruby"],
+    gabarito: 1,
+    explicacao: "JavaScript é a linguagem usada para tornar páginas web interativas."
+  },
+  {
+    pergunta: "O que significa URL?",
+    alternativas: ["Universal Resource Locator", "Unified Resource Locator", "Uniform Resource Locator", "Universal Reference Locator", "Unique Resource Locator"],
+    gabarito: 2,
+    explicacao: "URL é o endereço completo de um recurso na internet."
+  },
+  {
+    pergunta: "O que é um vírus de computador?",
+    alternativas: ["Programa malicioso que se replica e infecta sistemas", "Programa para acelerar o PC", "Antivírus", "Tipo de hardware", "Software para jogos"],
+    gabarito: 0,
+    explicacao: "Vírus são programas que causam danos ao sistema infectado."
+  },
+  {
+    pergunta: "O que é um banco de dados?",
+    alternativas: ["Coleção organizada de dados", "Programa para desenhar", "Sistema operacional", "Software antivírus", "Navegador de internet"],
+    gabarito: 0,
+    explicacao: "Banco de dados armazena informações estruturadas para fácil acesso."
+  }
+  ,{
+    tema: "Informática",
+    enunciado: "O que é software livre?",
+    alternativas: [
+      "Software gratuito sem código aberto",
+      "Programa pirata",
+      "Software com código-fonte disponível e permissão para modificação",
+      "Aplicativo de redes sociais",
+      "Ferramenta de design gráfico"
+    ],
+    gabarito: 2,
+    explicacao: "Software livre permite acesso ao código-fonte e liberdade de uso e modificação."
+  },
+  {
+    tema: "Informática",
+    enunciado: "Qual dispositivo é considerado uma unidade de entrada?",
+    alternativas: [
+      "Monitor",
+      "Impressora",
+      "Mouse",
+      "Caixa de som",
+      "Projetor"
+    ],
+    gabarito: 2,
+    explicacao: "O mouse envia informações para o computador, sendo um dispositivo de entrada."
+  },
+  {
+    tema: "Informática",
+    enunciado: "O que é phishing?",
+    alternativas: [
+      "Técnica de compressão de arquivos",
+      "Atualização automática do sistema",
+      "Tentativa de obter dados por meio de falsos e-mails ou sites",
+      "Criptografia de dados",
+      "Ferramenta de backup"
+    ],
+    gabarito: 2,
+    explicacao: "Phishing é um golpe digital que tenta enganar o usuário para roubar informações."
+  },
+  {
+    tema: "Informática",
+    enunciado: "O que significa CPU?",
+    alternativas: [
+      "Central Process Unit",
+      "Computer Program Unit",
+      "Central Processing Unit",
+      "Computing Primary Unit",
+      "Component Program Usage"
+    ],
+    gabarito: 2,
+    explicacao: "CPU é a Unidade Central de Processamento, o 'cérebro' do computador."
+  },
+  {
+    tema: "Informática",
+    enunciado: "O que é um navegador web?",
+    alternativas: [
+      "Programa para edição de texto",
+      "Aplicativo para executar planilhas",
+      "Programa usado para acessar a internet",
+      "Software antivírus",
+      "Sistema operacional"
+    ],
+    gabarito: 2,
+    explicacao: "Navegadores como Chrome e Firefox permitem acessar conteúdos da internet."
+  },
+  {
+    tema: "Informática",
+    enunciado: "Qual dos seguintes é um sistema operacional?",
+    alternativas: [
+      "Excel",
+      "Firefox",
+      "Android",
+      "WhatsApp",
+      "Photoshop"
+    ],
+    gabarito: 2,
+    explicacao: "Android é um sistema operacional usado principalmente em dispositivos móveis."
+  },
+  {
+    tema: "Informática",
+    enunciado: "O que faz um antivírus?",
+    alternativas: [
+      "Gera relatórios financeiros",
+      "Cria páginas web",
+      "Detecta e remove programas maliciosos",
+      "Altera configurações do Windows",
+      "Faz backup na nuvem"
+    ],
+    gabarito: 2,
+    explicacao: "Antivírus identifica, bloqueia e remove ameaças no computador."
+  },
+  {
+    tema: "Informática",
+    enunciado: "O que é armazenamento em nuvem?",
+    alternativas: [
+      "Disco rígido externo",
+      "Serviço de backup físico",
+      "Armazenamento remoto acessado pela internet",
+      "Memória RAM extra",
+      "Aplicativo de mensagens"
+    ],
+    gabarito: 2,
+    explicacao: "A nuvem permite salvar e acessar arquivos via internet."
+  },
+  {
+    tema: "Informática",
+    enunciado: "O que é um algoritmo?",
+    alternativas: [
+      "Linguagem de programação",
+      "Conjunto de instruções para resolver um problema",
+      "Sistema operacional",
+      "Tipo de memória",
+      "Rede social"
+    ],
+    gabarito: 1,
+    explicacao: "Algoritmo é uma sequência lógica de passos para atingir um objetivo."
+  },
+  {
+    tema: "Informática",
+    enunciado: "Qual linguagem é mais usada em ciência de dados?",
+    alternativas: [
+      "Java",
+      "HTML",
+      "C",
+      "Python",
+      "PHP"
+    ],
+    gabarito: 3,
+    explicacao: "Python é amplamente usada em ciência de dados por sua simplicidade e bibliotecas específicas."
+  }
+];
+;
+// Função para embaralhar arrays
+function shuffle(array) {
+  let currentIndex = array.length, randomIndex;
+  while(currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+  }
+  return array;
+}
+
+let questoesSelecionadas = [];
+let tipoQuiz = '';
+
+function iniciarQuiz(tipo) {
+  tipoQuiz = tipo;
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  let questoesBase = (tipo === 'arte') ? questoesArte.slice() : questoesInformatica.slice();
+  shuffle(questoesBase);
+  questoesSelecionadas = questoesBase.slice(0, 10);
+
+  let html = '';
+  questoesSelecionadas.forEach((q, index) => {
+    html += `<div class="questao">
+      <p><strong>Questão ${index + 1}:</strong> ${q.pergunta}</p>
+      <div class="alternativas">`;
+    q.alternativas.forEach((alt, i) => {
+      const id = `q${index}_alt${i}`;
+      html += `<label><input type="radio" name="q${index}" id="${id}" value="${i}"> ${String.fromCharCode(65 + i)}. ${alt}</label>`;
+    });
+    html += `</div></div>`;
+  });
+
+  html += `<button onclick="conferirRespostas()">Conferir respostas</button>`;
+  container.innerHTML = html;
+}
+
+function conferirRespostas() {
+  let totalAcertos = 0;
+  let resultadosHTML = '';
+  for(let i = 0; i < questoesSelecionadas.length; i++) {
+    const radios = document.getElementsByName(`q${i}`);
+    let respostaUsuario = null;
+    for(let r of radios) {
+      if(r.checked) {
+        respostaUsuario = parseInt(r.value);
+        break;
+      }
+    }
+    const correta = questoesSelecionadas[i].gabarito;
+    const acertou = respostaUsuario === correta;
+
+    if(acertou) totalAcertos++;
+
+    resultadosHTML += `<div class="resultado ${acertou ? 'acertou' : 'errou'}">
+      <p><strong>Questão ${i + 1}:</strong> ${questoesSelecionadas[i].pergunta}</p>
+      <p>Sua resposta: ${respostaUsuario === null ? '<em>Não respondeu</em>' : String.fromCharCode(65 + respostaUsuario) + '. ' + questoesSelecionadas[i].alternativas[respostaUsuario]}</p>
+      <p>Resposta correta: ${String.fromCharCode(65 + correta)}. ${questoesSelecionadas[i].alternativas[correta]}</p>
+      <p class="explicacao">Explicação: ${questoesSelecionadas[i].explicacao}</p>
+    </div>`;
+  }
+  resultadosHTML = `<h2>Resultado: ${totalAcertos} acertos de ${questoesSelecionadas.length}</h2>` + resultadosHTML;
+  document.getElementById('quiz-container').innerHTML = resultadosHTML;
+}
+
+</script>
+
+<script>
+    function iniciarQuiz(tipo) {
+      const container = document.getElementById('quiz-container');
+      container.innerHTML = '';
+    
+      const bancoQuestoes = tipo === 'arte' ? questoesArte : questoesInformatica;
+      questoesSelecionadas = shuffle([...bancoQuestoes]).slice(0, 10);
+    
+      questoesSelecionadas.forEach((questao, index) => {
+        const div = document.createElement('div');
+        div.className = 'questao';
+    
+        const pergunta = questao.pergunta || questao.enunciado;
+        div.innerHTML = `<p><strong>Questão ${index + 1}:</strong> ${pergunta}</p>`;
+    
+        const alternativasDiv = document.createElement('div');
+        alternativasDiv.className = 'alternativas';
+    
+        questao.alternativas.forEach((alternativa, i) => {
+          const id = `q${index}_a${i}`;
+          alternativasDiv.innerHTML += `
+            <label>
+              <input type="radio" name="questao${index}" value="${i}" id="${id}">
+              ${alternativa}
+            </label>
+          `;
+        });
+    
+        div.appendChild(alternativasDiv);
+        container.appendChild(div);
+      });
+    
+      const botao = document.createElement('button');
+      botao.textContent = 'Enviar Respostas';
+      botao.onclick = corrigirQuiz;
+      container.appendChild(botao);
+    }
+    
+    function corrigirQuiz() {
+      const container = document.getElementById('quiz-container');
+      const resultados = document.createElement('div');
+      resultados.className = 'resultado';
+    
+      let acertos = 0;
+    
+      questoesSelecionadas.forEach((questao, index) => {
+        const selecionada = document.querySelector(`input[name="questao${index}"]:checked`);
+        const resposta = selecionada ? parseInt(selecionada.value) : -1;
+        const correta = questao.gabarito;
+    
+        const divResultado = document.createElement('div');
+        divResultado.className = resposta === correta ? 'acertou' : 'errou';
+    
+        if (resposta === correta) acertos++;
+    
+        const pergunta = questao.pergunta || questao.enunciado;
+    
+        divResultado.innerHTML = `
+          <p><strong>Questão ${index + 1}:</strong> ${pergunta}</p>
+          <p><strong>Sua resposta:</strong> ${resposta !== -1 ? questao.alternativas[resposta] : 'Não respondida'}</p>
+          <p><strong>Correta:</strong> ${questao.alternativas[correta]}</p>
+          <p class="explicacao">${questao.explicacao}</p>
+        `;
+    
+        resultados.appendChild(divResultado);
+      });
+    
+      const notaFinal = document.createElement('div');
+      notaFinal.style.marginTop = '20px';
+      notaFinal.innerHTML = `<h2>Você acertou ${acertos} de 10 questões.</h2>`;
+      resultados.prepend(notaFinal);
+    
+      container.innerHTML = '';
+      container.appendChild(resultados);
+    }
+    </script>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz ENEM Interativo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center p-4">
+  <div class="max-w-3xl w-full">
+    <h1 class="text-3xl font-bold text-center text-indigo-700 mb-6">🎓 Quiz ENEM - Arte e Informática</h1>
+    
+    <div class="flex justify-center gap-4 mb-6">
+      <button onclick="iniciarQuiz('arte')" class="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2 rounded-lg shadow-md transition">🎨 Arte</button>
+      <button onclick="iniciarQuiz('informatica')" class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-lg shadow-md transition">💻 Informática</button>
+    </div>
+
+    <div id="quiz-container" class="space-y-6"></div>
+  </div>
+
+  <!-- Modal ou resultado aparecerá aqui -->
+</body>
+</html>
+<div class="bg-white p-5 rounded-xl shadow-md border">
