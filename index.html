@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz ENEM: Informática e Artes</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+ body {
+   background-color: #dbcfdc; /* Cor de fundo que você definiu */
+  font-family: sans-serif;
+  margin: 0; /* Remover margem padrão do body */
+  min-height: 100vh; /* Garante que o body ocupe pelo menos 100% da altura da viewport */
+  display: flex; /* Usar flexbox para centralizar o container */
+  justify-content: center; /* Centralizar horizontalmente */
+  align-items: center; /* Centralizar verticalmente */
+  overflow-x: hidden; /* Evita barra de rolagem horizontal desnecessária */
+  position: relative; /* Importante para posicionamento absoluto/fixo dos Pokémon */
+}
+
+/* Estilos para o container principal do Quiz */
+.container {
+  background-color: #ffffff; /* Fundo branco para o card do quiz */
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 600px; /* Largura máxima para o quiz */
+  width: 90%; /* Ocupa 90% da largura disponível */
+  z-index: 10; /* Garante que o quiz fique acima dos Pokémon */
+}
+
+/* Estilos para o cabeçalho do quiz */
+header h1 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+header p {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+/* Estilos para a seção de configuração */
+.card {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select {
+  width: calc(100% - 20px); /* Ajusta a largura do campo */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn {
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+
+/* Estilos para os Pokémon posicionados */
+.pokemon {
+  position: fixed; /* Fica fixo na tela, não rola com o conteúdo */
+  width: 100px; /* Tamanho dos Pokémon, ajuste se precisar */
+  height: auto;
+  image-rendering: pixelated; /* Mantém a qualidade pixelada do Pikachu */
+  z-index: 5; /* Coloca os Pokémon atrás do container do quiz */
+}
+
+.pikachu-left {
+  bottom: 0px; /* Alinha com o pé da margem (parte inferior da tela) */
+  left: 100px; /* Distância da margem esquerda */
+  
+}
+
+.tapu-koko-right {
+  bottom: 0px; /* Alinha com o pé da margem (parte inferior da tela) */
+  right: 100px; /* Distância da margem direita */
+ 
+}
+
+/* Animação para o Pikachu (corre da esquerda para a direita) */
+@keyframes runLeftToRight {
+  0% {
+    left: -100px; /* Começa fora da tela à esquerda */
+    transform: scaleX(1); /* Virado para a direita */
+  }
+  50% {
+    left: calc(100% - 100px); /* Chega até a direita */
+    transform: scaleX(1); /* Virado para a direita */
+  }
+  100% {
+    left: -100px; /* Volta para a esquerda */
+    transform: scaleX(-1); /* Vira para a esquerda */
+  }
+}
+
+/* Animação para o Tapu Koko (corre da direita para a esquerda) */
+@keyframes runRightToLeft {
+  0% {
+    right: -100px; /* Começa fora da tela à direita */
+    transform: scaleX(1); /* Virado para a esquerda (original) */
+  }
+  50% {
+    right: calc(100% - 100px); /* Chega até a esquerda */
+    transform: scaleX(1); /* Virado para a esquerda (original) */
+  }
+  100% {
+    right: -100px; /* Volta para a direita */
+    transform: scaleX(-1); /* Vira para a direita */
+  }
+}
+
+/* Media Query para telas menores (opcional, mas recomendado) */
+@media (max-width: 768px) {
+  .pikachu-left, .tapu-koko-right {
+    display: none; /* Esconde os Pokémon em telas muito pequenas para não atrapalhar */
+  }
+}
+
+</style>
+</head>
+<body>
+<div id="gifContainer" class="hidden">
+    <img id="resultGif" src="" alt="GIF do Resultado" style="width: 200px; height: auto;">
+</div>
+
+<div id="resultSection">
+    </div>
+
+  <img src="pikashu.gif" alt="Pikachu Animado" class="pokemon pikachu-left">
+
+  <img src="tapu-koko.gif" alt="Tapu Koko Animado" class="pokemon tapu-koko-right">
+
+  <div class="container">
+    <header>
+      <h1>Quiz ENEM</h1>
+      <p>Selecione a disciplina, a quantidade de questões e teste seus conhecimentos!</p>
+    </header>
+
+    <section id="setup-section" class="card">
+      <h2>Configuração do Quiz</h2>
+      <form id="quiz-setup-form">
+        <div class="form-group">
+          <label for="aluno-nome">Seu Nome:</label>
+          <input type="text" id="aluno-nome" placeholder="Digite seu nome" required>
+        </div>
+
+        <div class="form-group">
+          <label for="disciplina">Escolha a Disciplina:</label>
+          <select id="disciplina" required>
+            <option value="">Selecione...</option>
+            <option value="Informática Básica">Informática Básica</option>
+            <option value="Artes">Artes</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="quantidade-questoes">Quantidade de Questões (máx. 250):</label>
+          <input type="number" id="quantidade-questoes" min="1" max="250" value="10" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Iniciar Quiz</button>
+      </form>
+        </section>
+
+        <section id="quiz-section" class="card hidden">
+            <h2 id="current-question-number">Questão 1</h2>
+            <p class="question-enunciado" id="question-enunciado"></p>
+            <div class="alternatives" id="alternatives-container">
+                </div>
+            <button id="next-question-btn" class="btn btn-secondary">Próxima Questão</button>
+        </section>
+
+        <section id="result-section" class="card hidden">
+            <h2 id="result-title"></h2>
+            <p id="result-message"></p>
+            <p id="result-score"></p>
+            <button id="restart-quiz-btn" class="btn btn-primary">Recomeçar Quiz</button>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
