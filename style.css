@@ -1,0 +1,249 @@
+:root {
+    --primary-color: #34e964; /* Verde vibrante */
+    --secondary-color: #2196F3; /* Azul para botões secundários */
+    --accent-color: #FFC107; /* Amarelo para destaques */
+    --text-color: #333;
+    --bg-color: #f4f7f6;
+    --card-bg: #5cc6d268;
+    --border-color: #e0e0e0;
+    --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    line-height: 1.6;
+    scroll-behavior: smooth;
+}
+
+.container {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+    padding: 30px;
+    max-width: 600px;
+    width: 90%;
+    text-align: center;
+    margin: 20px auto;
+}
+
+header h1 {
+    color: var(--primary-color);
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+header p {
+    color: #666;
+    margin-bottom: 30px;
+    font-weight: 400;
+}
+
+.card {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 25px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.card h2 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select {
+    width: calc(100% - 20px);
+    padding: 12px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1em;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+    outline: none;
+}
+
+.btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-transform: uppercase;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #43A047; /* Tom mais escuro do verde */
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: white;
+    margin-top: 20px;
+}
+
+.btn-secondary:hover {
+    background-color: #1976D2; /* Tom mais escuro do azul */
+    transform: translateY(-2px);
+}
+
+.hidden {
+    display: none;
+}
+
+/* Quiz Section Styles */
+.question-enunciado {
+    font-size: 1.2em;
+    margin-bottom: 25px;
+    font-weight: 500;
+    text-align: left;
+    color: #444;
+}
+
+.alternatives {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.alternative-item {
+    background-color: #f9f9f9;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alternative-item:hover {
+    background-color: #e8f5e9; /* Levemente verde ao passar o mouse */
+    border-color: var(--primary-color);
+}
+
+.alternative-item.selected {
+    background-color: #dcedc8; /* Verde claro quando selecionado */
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.alternative-item.correct {
+    background-color: #c8e6c9; /* Verde para resposta correta */
+    border-color: #4CAF50;
+    font-weight: 600;
+}
+
+.alternative-item.incorrect {
+    background-color: #ffcdd2; /* Vermelho para resposta incorreta */
+    border-color: #F44336;
+    font-weight: 600;
+}
+
+.alternative-item input[type="radio"] {
+    margin-right: 10px;
+    transform: scale(1.2); /* Aumenta o tamanho do radio button */
+}
+
+/* Result Section Styles */
+#result-title {
+    font-size: 2.2em;
+    margin-bottom: 10px;
+}
+
+#result-title.success {
+    color: var(--primary-color);
+}
+
+#result-title.fail {
+    color: #F44336; /* Vermelho para reprovação */
+}
+
+#result-message {
+    font-size: 1.1em;
+    margin-bottom: 15px;
+    color: #555;
+}
+
+#result-score {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--secondary-color);
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+    header h1 {
+        font-size: 2em;
+    }
+    .card h2 {
+        font-size: 1.5em;
+    }
+    .btn {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+}
+.hidden {
+    display: none;
+}
+
+#gifContainer {
+    position: absolute; /* Ou 'fixed' se você quiser que ele fique fixo na tela, independentemente da rolagem */
+    top: 50%; /* Centraliza verticalmente */
+    left: 50%; /* Centraliza horizontalmente */
+    transform: translate(-50%, -50%); /* Ajusta para centralizar o próprio elemento */
+    z-index: 1000; /* Um valor alto para garantir que ele fique por cima de tudo */
+    /* Adicione mais estilos se quiser, como background, borda, etc. */
+}
+
+/* Opcional: Se a sua div de resultado tem um z-index, garanta que o gifContainer seja maior */
+#resultSection {
+    position: relative; /* Garante que 'z-index' funcione se você precisar */
+    z-index: 1; /* Exemplo: se já tiver um z-index */
+    /* ... outros estilos da sua div de resultado ... */
+}
